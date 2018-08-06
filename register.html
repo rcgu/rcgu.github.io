@@ -1,0 +1,506 @@
+<?php
+session_start();
+if(isset($_SESSION['user'])!="")
+{
+	header("Location: home.php");
+}
+include_once 'dbconnect.php';
+
+?>
+<script type="text/javascript">
+var varieties1=[
+["Branch"],
+["Branch", "Biotechnology", "Civil", "CSE", "EEE", "ECE", "EIE", "IE", "IT", "Mechanical", "Physics", "Chemistry","English", "Maths"],
+["Branch", "Applied Mathematics", "Biochemistry", "Biotechnology", "Chemistry", "Computer Science", "Environmental Studies", "Electronics/Physics", "Microbiology", "English"],
+];
+var varieties2=[
+["Term"],
+["Term", "2016-20", "2016-21"],
+["Term", "2015-19", "2015-20"],
+["Term", "2014-18", "2014-19"],
+["Term", "2013-17", "2013-18"],
+["Term", "2012-16", "2012-17"],
+];
+function Box2(idx) {
+var f=document.rcgu;
+f.ubranch.options.length=null;
+if(idx<=2){
+	for(var i=0; i<varieties1[idx].length; i++) {
+    f.ubranch.options[i]=new Option(varieties1[idx][i], varieties1[idx][i]); 
+    }	
+	document.getElementById('branchselect').style.display = 'block';
+	document.getElementById('branchtext').style.display = 'none';
+	document.getElementById('branchtext').required = false;
+	$requiredprogram = 0;
+}
+else{
+	document.getElementById('branchselect').style.display = 'none';
+	document.getElementById('branchtext').style.display = 'block';
+	document.getElementById('branchtext').required = true;
+	$requiredprogram = 1;
+}
+    
+}
+function Box4(idx) {
+var f=document.rcgu;
+f.uterm.options.length=null;
+for(var i=0; i<varieties2[idx].length; i++) {
+    f.uterm.options[i]=new Option(varieties2[idx][i], varieties2[idx][i]); 
+    }    
+}
+</script>
+<?php
+
+if(isset($_POST['btn-signup']))
+{
+	
+		$sectionvalue=' ';
+	$uname = mysqli_real_escape_string($con, $_POST['uname']);
+	$uemail = mysqli_real_escape_string($con, $_POST['uemail']);
+	//$upass = md5(mysqli_real_escape_string($con, $_POST['pass']));
+	$upin = mysqli_real_escape_string($con, $_POST['upin']);
+	$uphone = mysqli_real_escape_string($con, $_POST['uphone']);
+	$ugender = mysqli_real_escape_string($con, $_POST['ugender']);
+	$udob = mysqli_real_escape_string($con, $_POST['udob']);
+	$uhostel = mysqli_real_escape_string($con, $_POST['uhostel']);
+	$ulocal = mysqli_real_escape_string($con, $_POST['ulocal']);
+	$uhometown = mysqli_real_escape_string($con, $_POST['uhometown']);
+	$ucollege = mysqli_real_escape_string($con, $_POST['ucollege']);
+	$uyear = mysqli_real_escape_string($con, $_POST['uyear']);
+	$uterm = mysqli_real_escape_string($con, $_POST['uterm']);
+	$usection = mysqli_real_escape_string($con, $_POST['usection']);
+	$ublood = mysqli_real_escape_string($con, $_POST['ublood']);
+	$ubloodwilling = mysqli_real_escape_string($con, $_POST['ubloodwilling']);
+	
+if($requiredprogram == 0){
+	$ubranch = mysqli_real_escape_string($con, $_POST['ubranch']);
+}
+else{
+	$ubranch = mysqli_real_escape_string($con, $_POST['uprogram']);
+}
+
+	$uname = trim($uname);
+	$uemail = trim($uemail);
+	//$upass = trim($upass);
+	$upin = trim($upin);
+	$uphone = trim($uphone);
+	$ugender = trim($ugender);
+	$udob = trim($udob);
+	$uhostel = trim($uhostel);
+	$ulocal = trim($ulocal);
+	$uhometown = trim($uhometown);
+	$ucollege = trim($ucollege);
+	$ubranch = trim($ubranch);
+	$uyear = trim($uyear);
+	$uterm = trim($uterm);
+	$usection = trim($usection);
+	$ublood = trim($ublood);
+	$ubloodwilling = trim($ubloodwilling);
+	
+	// email exist or not
+	$query = "SELECT `Email` FROM contact_information WHERE `Email`='$uemail'";
+	$result = mysqli_query($con, $query);	
+	$count = mysqli_num_rows($result); // if email not found then register
+	
+		if($count==0){
+	$query = "SELECT `Pin` FROM contact_information WHERE `Pin`='$upin'";
+	$result = mysqli_query($con, $query);	
+	$count = mysqli_num_rows($result); // if email not found then register
+	
+	if($count==0){
+	$query = "SELECT `Phone` FROM contact_information WHERE `Phone`='$uphone'";
+	$result = mysqli_query($con, $query);	
+		$count = mysqli_num_rows($result); // if email not found then register
+		}}
+	
+	if($count == 0){
+		
+		if(mysqli_query($con, "INSERT INTO contact_information(`id`, `Name`, `Pin`, `Email`, `Phone`, `Gender`, `Date of Birth`, `Hostel`, `Local`, `Home Town`, `College`, `Branch`, `Year`, `Term`, `Section`, `Blood Group`, `Blood Donation Willingness`) VALUES(NULL, '$uname','$upin','$uemail','$uphone','$ugender','$udob','$uhostel','$ulocal','$uhometown','$ucollege','$ubranch','$uyear','$uterm','$usection','$ublood','$ubloodwilling')"))
+		{
+			?>
+			<script>alert('successfully registered ');</script>
+			<?php
+		}
+		else
+		{
+			?>
+			<script>alert('error while registering you...');</script>
+			<?php
+		}		
+	}
+	else{
+			?>
+			<script>alert('Email has been already taken');</script>
+			<?php
+	}
+	
+}
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet' type='text/css'>
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+
+<head>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+
+<script>
+$(function() {
+  $( "#dob" ).datepicker({
+   changeMonth: true,
+   changeYear: true,
+   dateFormat: 'dd/mm/yy',
+   yearRange: '1990:2001'
+  });
+ });
+ 
+
+ </script>
+ 
+ <script type="text/javascript">
+var varieties1=[
+["Branch"],
+["Branch", "Biotechnology", "Civil", "CSE", "EEE", "ECE", "EIE", "IE", "IT", "Mechanical", "Physics", "Chemistry","English", "Maths"],
+["Branch", "Applied Mathematics", "Biochemistry", "Biotechnology", "Chemistry", "Computer Science", "Environmental Studies", "Electronics/Physics", "Microbiology", "English"],
+];
+var varieties2=[
+["Term"],
+["Term", "2016-20", "2016-21"],
+["Term", "2015-19", "2015-20"],
+["Term", "2014-18", "2014-19"],
+["Term", "2013-17", "2013-18"],
+["Term", "2012-16", "2012-17"],
+];
+function Box2(idx) {
+var f=document.rcgu;
+f.ubranch.options.length=null;
+if(idx<=2){
+	for(var i=0; i<varieties1[idx].length; i++) {
+    f.ubranch.options[i]=new Option(varieties1[idx][i], varieties1[idx][i]); 
+    }	
+	document.getElementById('branchselect').style.display = 'block';
+	document.getElementById('branchtext').style.display = 'none';
+	document.getElementById('branchtext').required = false;
+	$requiredprogram = 0;
+}
+else{
+	document.getElementById('branchselect').style.display = 'none';
+	document.getElementById('branchtext').style.display = 'block';
+	document.getElementById('branchtext').required = true;
+	$requiredprogram = 1;
+}
+    
+}
+function Box4(idx) {
+var f=document.rcgu;
+f.uterm.options.length=null;
+for(var i=0; i<varieties2[idx].length; i++) {
+    f.uterm.options[i]=new Option(varieties2[idx][i], varieties2[idx][i]); 
+    }    
+}
+</script>
+</head>
+
+<style>
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, 
+pre, form, fieldset, input, textarea, p, blockquote, th, td { 
+  padding:0;
+  margin:0;}
+
+fieldset, img {border:0}
+
+ol, ul, li {list-style:none}
+
+:focus {outline:none}
+
+body,
+input,
+textarea,
+select {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  color: #4c4c4c;
+}
+
+
+h1 {
+  font-size: 32px;
+  font-weight: 300;
+  color: #4c4c4c;
+  text-align: center;
+  padding-top: 10px;
+  margin-bottom: 10px;
+}
+
+html{
+  background-color: #ffffff;
+}
+
+.testbox {
+  margin: 20px auto;
+  width: 343px; 
+  height: 810px; 
+  -webkit-border-radius: 8px/7px; 
+  -moz-border-radius: 8px/7px; 
+  border-radius: 8px/7px; 
+  background-color: #ebebeb; 
+  -webkit-box-shadow: 1px 2px 5px rgba(0,0,0,.31); 
+  -moz-box-shadow: 1px 2px 5px rgba(0,0,0,.31); 
+  box-shadow: 1px 2px 5px rgba(0,0,0,.31); 
+  border: solid 1px #cbc9c9;
+}
+
+input[type=radio] {
+  visibility: hidden;
+}
+
+form{
+  margin: 0 30px;
+}
+
+label.radio {
+ cursor: pointer;
+  text-indent: 35px;
+  overflow: visible;
+  display: inline-block;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+label.radio:before {
+  background: #3a57af;
+  content:'';
+  position: absolute;
+  top:2px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+}
+
+label.radio:after {
+ opacity: 0;
+ content: '';
+ position: absolute;
+ width: 0.5em;
+ height: 0.25em;
+ background: transparent;
+ top: 7.5px;
+ left: 4.5px;
+ border: 3px solid #ffffff;
+ border-top: none;
+ border-right: none;
+
+ -webkit-transform: rotate(-45deg);
+ -moz-transform: rotate(-45deg);
+ -o-transform: rotate(-45deg);
+ -ms-transform: rotate(-45deg);
+ transform: rotate(-45deg);
+}
+
+input[type=radio]:checked + label:after {
+ opacity: 1;
+}
+
+hr{
+  color: #a9a9a9;
+  opacity: 0.3;
+}
+
+input[type=text],input[type=password], input[type=number]{
+  width: 200px; 
+  height: 39px; 
+  -webkit-border-radius: 0px 4px 4px 0px/5px 5px 4px 4px; 
+  -moz-border-radius: 0px 4px 4px 0px/0px 0px 4px 4px; 
+  border-radius: 0px 4px 4px 0px/5px 5px 4px 4px; 
+  background-color: #fff; 
+  -webkit-box-shadow: 1px 2px 5px rgba(0,0,0,.09); 
+  -moz-box-shadow: 1px 2px 5px rgba(0,0,0,.09); 
+  box-shadow: 1px 2px 5px rgba(0,0,0,.09); 
+  border: solid 1px #cbc9c9;
+  margin-left: -5px;
+  margin-top: 13px; 
+  padding-left: 10px;
+}
+
+input[name="uprogram"]{
+  width: 123px;
+}
+
+input[type=range]{
+  width: 200px; 
+  height: 39px; 
+  margin-left: 30px;
+  margin-top: 13px; 
+  padding-left: 10px;
+}
+
+input[name=""]
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type=password]{
+  margin-bottom: 25px;
+}
+
+#icon {
+  display: inline-block;
+  width: 30px;
+  background-color: #3a57af;
+  padding: 8px 0px 8px 15px;
+  margin-left: 15px;
+  -webkit-border-radius: 4px 0px 0px 4px; 
+  -moz-border-radius: 4px 0px 0px 4px; 
+  border-radius: 4px 0px 0px 4px;
+  color: white;
+  -webkit-box-shadow: 1px 2px 5px rgba(0,0,0,.09);
+  -moz-box-shadow: 1px 2px 5px rgba(0,0,0,.09); 
+  box-shadow: 1px 2px 5px rgba(0,0,0,.09); 
+  border: solid 0px #cbc9c9;
+}
+
+select{  
+  width: 117px; 
+  height: 39px; 
+  -webkit-border-radius: 0px 4px 4px 0px/5px 5px 4px 4px; 
+  -moz-border-radius: 0px 4px 4px 0px/0px 0px 4px 4px; 
+  border-radius: 0px 4px 4px 0px/5px 5px 4px 4px; 
+  background-color: #fff; 
+  -webkit-box-shadow: 1px 2px 5px rgba(0,0,0,.09); 
+  -moz-box-shadow: 1px 2px 5px rgba(0,0,0,.09); 
+  box-shadow: 1px 2px 5px rgba(0,0,0,.09); 
+  border: solid 1px #cbc9c9;
+  margin-left: 15px;
+  margin-top: 13px; 
+  padding-left: 10px;
+}
+
+select[name="ubranch"], select[name="uterm"]{
+  margin-left: 0px;
+}
+
+.gender {
+  margin-top: 17px;
+  margin-left: 20px;
+  margin-bottom: -10px;
+}
+
+.accounttype{
+  margin-left: 8px;
+  margin-top: 20px;
+}
+
+a.button {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  padding: 6px 25px 0px 20px;
+  margin: 10px 8px 20px 0px;
+  display: inline-block;
+  margin-left:100px;
+  text-decoration: none;
+  width: 50px; height: 27px; 
+  -webkit-border-radius: 5px; 
+  -moz-border-radius: 5px; 
+  border-radius: 5px; 
+  background-color: #3a57af; 
+  -webkit-box-shadow: 0 3px rgba(58,87,175,.75); 
+  -moz-box-shadow: 0 3px rgba(58,87,175,.75); 
+  box-shadow: 0 3px rgba(58,87,175,.75);
+  transition: all 0.1s linear 0s; 
+  top: 0px;
+  position: relative;
+}
+
+a.button:hover {
+  top: 3px;
+  background-color:#2e458b;
+  -webkit-box-shadow: none; 
+  -moz-box-shadow: none; 
+  box-shadow: none;
+  
+}
+
+
+</style>
+
+<div class="testbox">
+  <h1>Registration</h1>
+
+  <form name="rcgu" action="/">
+
+  <label id="icon" for="name"><i class="icon-user"></i></label>
+  <input type="text" name="uname" id="name" placeholder="Name" required/>
+  <label id="icon" for="name"><i class="icon-user"></i></label>
+  <input type="number" name="upin" id="name" placeholder="Pin" required/>
+  <label id="icon" for="name"><i class="icon-envelope "></i></label>
+  <input type="text" name="uemail" id="name" placeholder="Email" required/>
+  <label id="icon" for="name"><i class="icon-phone"></i></label>
+  <input type="number" name="uphone" id="name" placeholder="Phone Number" required/>
+  <div class="gender">Gender
+    <input type="radio" value="None" id="male" name="gender" />
+    <label for="male" class="radio">Male</label>
+    <input type="radio" value="None" id="female" name="gender" />
+    <label for="female" class="radio">Female</label>
+   </div> 
+  <label id="icon" for="name"><i class="icon-user"></i></label>
+  <input type="text" name="udob" id="dob" placeholder="Date of Birth" required/>
+  <div class="gender">Hostel
+    <input type="radio" value="None" id="uhyes" name="uhostel" />
+    <label for="uhyes" class="radio" >Yes</label>
+    <input type="radio" value="None" id="uhno" name="uhostel" />
+    <label for="uhno" class="radio">No</label>
+   </div> 
+   <div class="gender">Local
+    <input type="radio" value="None" id="ulyes" name="ulocal" />
+    <label for="ulyes" class="radio">Yes</label>
+    <input type="radio" value="None" id="ulno" name="ulocal" />
+    <label for="ulno" class="radio">No</label>
+   </div> 
+
+  <div id= "collegeselect" style="float:left; width:50%"> 
+  <select name="ucollege" onchange="Box2(this.selectedIndex)">
+    <option value="College">College</option>
+	<option value="GIT">GIT</option>
+    <option value="GIS">GIS</option>
+    <option value="GIM">GIM</option>
+	<option value="GSIB">GSIB</option>
+    <option value="GIP">GIP</option>
+    <option value="GSA">GSA</option>
+	<option value="GSL">GSL</option>
+    <option value="CDL">CDL</option>
+</select></div>
+
+<div id= "branchselect" style="float:left; width:50%">
+<select name="ubranch" class="branch"></select></div>
+
+<div id= "branchtext" style="float:left; width:50%; display:none">
+<input type="text" name="uprogram" id="name" placeholder="Program" required />
+</div>
+
+<div  style="float:left; width:50%">
+<select name="uyear" onchange="Box4(this.selectedIndex)">
+    <option value="Year">Year</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+	<option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+</select></div>
+<div  style="float:left; width:50%">
+<select name="uterm"></select></div>
+  <label id="icon" for="name"><i class="icon-user"></i></label>
+  <input type="text" name="usection" id="name" placeholder="Section" required/>
+  <label id="icon" for="name"><i class="icon-user"></i></label>
+  <input type="text" name="ublood" id="name" placeholder="Blood Group" required/>
+  <div class="gender">Willingness to donate blood:<span id="percent">100%</span> 
+
+    <a href="#" class="button" onclick="this.parentNode.submit()">Register</a>
+  </form>
+</div></div>
